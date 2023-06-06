@@ -1,6 +1,6 @@
 ---
 title: "HELPmiss (Data Verbs) Activity"
-author: "YOUR NAME HERE"
+author: "Alvin Chen"
 output: html_notebook
 ---
 
@@ -17,9 +17,8 @@ library(mosaicData) # includes the `HELPmiss` data set
 
 # Load the `HELPmiss` data set into our RStudio environment
 data("HELPmiss", package = "mosaicData")
-
+?HELPmiss
 ```
-
 ## Helpful links: 
 
 - Look though the DC Textbook for `tidyverse` functions. 
@@ -39,7 +38,7 @@ data("HELPmiss", package = "mosaicData")
 - investigate by searching R help documentation
 - there's a research paper cited where additional detail is provided
 
-
+- The HElP study was an experiment that incorporated adults that cane from a detoxification unit who did not have a primary care physician. A motivation intervention and a multidisciplinary test or standard car were assigned to each patient at random. The ultimate goal of this study was to link them to primary medical care. One of the data sets that stemmed from the HELP study was the HELPmiss data set. The HELPmiss data set incoorperated adults that spoke English or Spanish. Given the choice of alcohol, heroin, and cocain, they were asked to report which substance was their first or second choice. Within thei location it was determined id they were near a primary care clinic which they would be reffered to or if they were homeless. Those that already had care, significant dimentia, lacked conctact information, pregnant, or are leaving the area were not included within the dataset. The adults were interviewed when during their detoxification and received follow up interviews that took place every 6 months for 2 years. Each case in the data set included adults that met the crieteria (spoke English or Spanish, Their choices of drugs, and location) and provided data that was requested for the study.
 
 ## Task 2: Basic Summaries 
 
@@ -49,14 +48,18 @@ data("HELPmiss", package = "mosaicData")
 
 ```{r}
 #Your code here 
-
+num_ppl <- 
+  HELPmiss %>% 
+  summarize(num_ppl = n()) #470
 ```
 
 2. total number of times in the past 6 months entered a detox program (measured at baseline) for all the people in `HELPmiss`. 
 
 ```{r}
 #Your code here 
-
+num_detox <-
+  HELPmiss %>% 
+  summarize(total_times = sum(e2b, na.rm=TRUE)) #549
 ```
 
 
@@ -65,7 +68,9 @@ data("HELPmiss", package = "mosaicData")
 
 ```{r}
 #Your code here 
-
+mean_time_after_detox <-
+  HELPmiss %>% 
+  summarize(mean_time = mean(daysanysub, na.rm=TRUE)) #75.13095
 ```
 
 
@@ -84,34 +89,48 @@ data("HELPmiss", package = "mosaicData")
 ### males versus females
 ```{r}
 #Your code here
-
+male_vs_female <- 
+  HELPmiss %>% 
+  group_by(female) %>% 
+  summarize(num_ppl = n()) 
 ```
 
 ### homeless or not
 ```{r}
 #Your code here
-
+yes_or_no_homeless <-
+  HELPmiss %>% 
+  group_by(homeless) %>% 
+  summarize(num_ppl = n()) 
 ```
 
 
 ### substance
 ```{r}
 #Your code here
-
+substance_group <-
+  HELPmiss %>% 
+  group_by(substance) %>% 
+  summarize(num_ppl = n())
 ```
 
 ### homeless versus housed broken down by sex
 ```{r}
 #Your code here
-
+housing_by_gender <- 
+  HELPmiss %>% 
+  group_by(homeless, female) %>% 
+  summarize(num_cases = n()) 
 ```
 
 ### homeless versus housed broken down by substance
 ```{r}
 #Your code here
-
+housing_by_substance <- 
+  HELPmiss %>% 
+  group_by(homeless, substance) %>% 
+  summarize(num_cases = n()) 
 ```
-
 
 
 ## Task 4: Data Visualization & Observations
@@ -120,9 +139,16 @@ data("HELPmiss", package = "mosaicData")
 
 *Remember, you can use* `esquisser` *or* `mplot` *in your console. But only include the ggplot code in this Rmd document.*
 
+My variables are: age, substance, and treat. FOr this plot, my goal was to focus on the relationship between age and substance use and to dive deeper, I wanted to know within that group, if the adult was refered to a clinic or not. It was interesting to me to see which substance correlated with which age group and of that, amount which age group and substance were randomized to a clinic.
+
 
 ```{r}
 # Your Code here.
+ggplot(HELPmiss) +
+  aes(x = age, y = substance, fill = treat) +
+  geom_boxplot() +
+  scale_fill_hue(direction = 1) +
+  theme_minimal()
 
 ```
 
